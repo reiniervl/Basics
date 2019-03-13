@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ConceptMariaDAO implements ConceptDAO {
+public class ConceptSqlDAO implements ConceptDAO {
 	private String url, username, password;
 	
 	private Connection getConnection() {
@@ -22,7 +22,7 @@ public class ConceptMariaDAO implements ConceptDAO {
 		return con;
 	}
 	
-	public ConceptMariaDAO(String url, String username, String password) {
+	public ConceptSqlDAO(String url, String username, String password) {
 		this.url = url;
 		this.username = username;
 		this.password = password;
