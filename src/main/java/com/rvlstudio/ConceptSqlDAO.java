@@ -1,7 +1,6 @@
 package com.rvlstudio;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.UUID;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,12 +28,11 @@ public class ConceptSqlDAO implements ConceptDAO {
 	}
 
 	public void addConcept(Concept concept) {
-		String sql = "INSERT INTO Concept (uuid, description, examples, tags) VALUES(?, ?, ?, ?)";
+		String sql = "INSERT INTO Concept (uuid, description, examples, tags) VALUES(?, ?, ?)";
 		try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 			stmt.setString(1, concept.getUuid().toString());
 			stmt.setString(2, concept.getDescription());
 			stmt.setString(3, concept.getExamples());
-			stmt.setString(4, concept.getTagsCSV());
 			stmt.executeUpdate();
 		} catch(SQLException e) {
 			System.out.println(e);
@@ -57,17 +55,14 @@ public class ConceptSqlDAO implements ConceptDAO {
 
 	public Concept getConcept(UUID uuid) {
 		Concept c = null;
-		String sql = "SELECT description, examples, tags FROM Concept WHERE uuid = ?";
+		String sql = "SELECT description, examples FROM Concept WHERE uuid = ?";
 		try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 			stmt.setString(1, uuid.toString());
 			ResultSet rs = stmt.executeQuery();
 			if(rs.next()) {
 				String d = rs.getString(1);
 				String e = rs.getString(2);
-				String[] t = rs.getString(3).split(",");
-				ArrayList<Tag> tags = new ArrayList<>();
-				for(String tz : t) tags.add(new Tag(UUID.randomUUID(), tz));
-				c = new Concept(uuid, d, e, tags);
+				c = new Concept(uuid, d, e);
 			}
 		} catch(SQLException e) {
 			System.out.println(e);
