@@ -1,6 +1,7 @@
 package com.rvlstudio;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -79,8 +80,23 @@ public class ConceptSqlDAO implements ConceptDAO {
 	}
 
 	public List<Concept> getByTags(Tag... tags) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "SELECT Concepts.uuid, Concepts.description, Concepts.examples FROM Concepts, Tags, ConceptTags WHERE Concepts.uuid=ConceptTags.Conceptuuid AND Tags.uuid=ConceptTags.Taguuid AND Tags.name=?";
+		ArrayList<Concept> cl = new ArrayList<>();
+		for(Tag t : tags) {
+			try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+				stmt.setString(1, t.getName());
+				ResultSet rs = stmt.executeQuery();
+				while(rs.next()) {
+					UUID u = UUID.fromString(rs.getString(1));
+					String d = rs.getString(2);
+					String e = rs.getString(3);
+					cl.add(new Concept(u, d, e));
+				}
+			} catch(SQLException e) {
+				System.out.println(e);
+			}
+		}
+		return cl;
 	}
 
 	public void addTag(Tag tag) {
