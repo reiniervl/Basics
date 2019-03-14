@@ -8,9 +8,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class ConceptSqlDAO implements ConceptDAO {
 	private String url, username, password;
+	private static ConceptSqlDAO dao = null;
 	
 	private Connection getConnection() {
 		Connection con = null;
@@ -21,17 +23,21 @@ public class ConceptSqlDAO implements ConceptDAO {
 		}
 		return con;
 	}
-	
-	public ConceptSqlDAO(String url, String username, String password) {
+		
+	public static ConceptSqlDAO getDAO(String url, String username, String password) {
+		if(dao == null) dao = new ConceptSqlDAO(url, username, password);
+		return dao;
+	}
+	private ConceptSqlDAO(String url, String username, String password) {
 		this.url = url;
 		this.username = username;
 		this.password = password;
 	}
 
 	public void addConcept(Concept concept) {
-		String sql = "INSERT INTO Concepts (uuid, description, examples, tags) VALUES(?, ?, ?)";
+		String sql = "INSERT INTO Concepts (uuid, description, examples) VALUES(?, ?, ?)";
 		try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
-			stmt.setString(1, concept.getUuid().toString());
+			stmt.setObject(1, concept.getUuid().toString(), Types.OTHER);
 			stmt.setString(2, concept.getDescription());
 			stmt.setString(3, concept.getExamples());
 			stmt.executeUpdate();
@@ -66,7 +72,7 @@ public class ConceptSqlDAO implements ConceptDAO {
 		Concept c = null;
 		String sql = "SELECT description, examples FROM Concepts WHERE uuid = ?";
 		try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
-			stmt.setString(1, uuid.toString());
+			stmt.setObject(1, uuid.toString(), Types.OTHER);
 			ResultSet rs = stmt.executeQuery();
 			if(rs.next()) {
 				String d = rs.getString(1);
@@ -102,7 +108,7 @@ public class ConceptSqlDAO implements ConceptDAO {
 	public void addTag(Tag tag) {
 		String sql = "INSERT INTO Tags (uuid, name) VALUES(?, ?)";
 		try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
-			stmt.setString(1, tag.getUUID().toString());
+			stmt.setObject(1, tag.getUUID().toString(), Types.OTHER);
 			stmt.setString(2, tag.getName());
 			stmt.executeUpdate();
 		} catch(SQLException e) {
