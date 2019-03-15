@@ -1,5 +1,8 @@
 package com.rvlstudio;
 
+import java.util.Properties;
+import java.util.ResourceBundle;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -28,8 +31,9 @@ public class AppTest extends TestCase {
 	 * Rigourous Test :-)
 	 */
 	public void testApp() {
-		ConceptSqlDAO dao = ConceptSqlDAO.getDAO("jdbc:postgresql:basics", "postgres", "vortex");
-		Concept c = new Concept(java.util.UUID.randomUUID(), "JUnit testing", "public void testApp() { assertTrue(true); }");
+		ResourceBundle rb = ResourceBundle.getBundle("db");
+		ConceptSqlDAO dao = ConceptSqlDAO.getDAO(rb.getString("db_url"), rb.getString("username"), rb.getString("password"));
+		Concept c = new Concept(java.util.UUID.randomUUID(), "ResourceBundle", "ResourceBundle rb = ResourceBundle.getBundle(\"db\");");
 		dao.addConcept(c);
 		assertTrue(true);
 	}

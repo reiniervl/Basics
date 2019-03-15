@@ -7,7 +7,9 @@ public class Concept {
 	private String description;
 	private String examples;
 	
-	public Concept() {}
+	public Concept() {
+		this.uuid = UUID.randomUUID();
+	}
 	
 	public Concept(UUID uuid, String description, String examples) {
 		this.uuid = uuid;
@@ -18,9 +20,7 @@ public class Concept {
 	public UUID getUuid() {
 		return uuid;
 	}
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
+	
 	public String getDescription() {
 		return description;
 	}
