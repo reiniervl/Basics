@@ -33,4 +33,9 @@ public class Concept {
 	public void setExamples(String examples) {
 		this.examples = examples;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("[%s, %s, %s]", uuid.toString(), description, examples);
+	}
 }

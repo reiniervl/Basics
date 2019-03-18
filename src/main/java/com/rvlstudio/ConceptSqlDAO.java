@@ -86,11 +86,31 @@ public class ConceptSqlDAO implements ConceptDAO {
 	}
 
 	public List<Concept> getByTags(Tag... tags) {
-		String sql = "SELECT Concepts.uuid, Concepts.description, Concepts.examples FROM Concepts, Tags, ConceptTags WHERE Concepts.uuid=ConceptTags.Conceptuuid AND Tags.uuid=ConceptTags.Taguuid AND Tags.name=?";
+		String sql = "SELECT Concepts.uuid, Concepts.description, Concepts.examples FROM Concepts, Tags, ConceptTags WHERE Concepts.uuid=ConceptTags.Conceptsuuid AND Tags.uuid=ConceptTags.Tagsuuid AND Tags.name=?";
 		ArrayList<Concept> cl = new ArrayList<>();
 		for(Tag t : tags) {
 			try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 				stmt.setString(1, t.getName());
+				ResultSet rs = stmt.executeQuery();
+				while(rs.next()) {
+					UUID u = UUID.fromString(rs.getString(1));
+					String d = rs.getString(2);
+					String e = rs.getString(3);
+					cl.add(new Concept(u, d, e));
+				}
+			} catch(SQLException e) {
+				System.out.println(e);
+			}
+		}
+		return cl;
+	}
+
+	public List<Concept> getByTags(String... tags) {
+		String sql = "SELECT Concepts.uuid, Concepts.description, Concepts.examples FROM Concepts, Tags, ConceptTags WHERE Concepts.uuid=ConceptTags.Conceptsuuid AND Tags.uuid=ConceptTags.Tagsuuid AND Tags.name=?";
+		ArrayList<Concept> cl = new ArrayList<>();
+		for(String t : tags) {
+			try(Connection con = getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+				stmt.setString(1, t);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
 					UUID u = UUID.fromString(rs.getString(1));
@@ -161,5 +181,4 @@ public class ConceptSqlDAO implements ConceptDAO {
 		}
 		return t;
 	}
-
 }

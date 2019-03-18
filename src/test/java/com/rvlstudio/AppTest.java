@@ -1,6 +1,5 @@
 package com.rvlstudio;
 
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import junit.framework.Test;
@@ -33,8 +32,8 @@ public class AppTest extends TestCase {
 	public void testApp() {
 		ResourceBundle rb = ResourceBundle.getBundle("db");
 		ConceptSqlDAO dao = ConceptSqlDAO.getDAO(rb.getString("db_url"), rb.getString("username"), rb.getString("password"));
-		Concept c = new Concept(java.util.UUID.randomUUID(), "ResourceBundle", "ResourceBundle rb = ResourceBundle.getBundle(\"db\");");
-		dao.addConcept(c);
+		for(Concept c : dao.getByTags("First")) System.out.println(c);
+		System.out.println("Testing with First");
 		assertTrue(true);
 	}
 }
